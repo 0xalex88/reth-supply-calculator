@@ -1,0 +1,13 @@
+[package]
+name = "reth-supply-calculator"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+reth = { git = "https://github.com/paradigmxyz/reth", tag = "v1.2.2" }
+reth-db = { git = "https://github.com/paradigmxyz/reth", tag = "v1.2.2" }
+
+alloy-primitives = { version = "0.8.20", default-features = false, features = [
+    "map-foldhash",
+] }
+eyre = "0.6"
