@@ -1,4 +1,5 @@
 use alloy_primitives::U256;
+use csv::Writer;
 use reth::utils::open_db_read_only;
 use reth_db::cursor::DbCursorRO;
 use reth_db::transaction::DbTx;
@@ -22,14 +23,20 @@ fn main() -> eyre::Result<()> {
     let mut total_balance = U256::ZERO;
     let mut account_count = 0;
 
-    while let Some((_, acc)) = c.next()? {
+    let mut wtr = Writer::from_path("./users.csv")?;
+
+    while let Some((addr, acc)) = c.next()? {
         account_count += 1;
         total_balance += acc.balance;
+
+        wtr.write_record(&[addr.to_string(), acc.balance.to_string()])?;
 
         if account_count % 10_000 == 0 {
             println!("Processed {} accounts", account_count);
         }
     }
+
+    wtr.flush()?;
 
     println!("Completed processing {} accounts", account_count);
     println!("Total wei balance: {}", total_balance);
